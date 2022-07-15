@@ -839,6 +839,7 @@
 
   .icon:hover {
     background-color: #0091a8;
+    transition: 0.4s linear;
   }
 
   .icon-right {
