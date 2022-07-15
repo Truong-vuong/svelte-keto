@@ -6,5 +6,5 @@
   <Keto />
 </main>
 
-<style lang="postcss" global>
+<style>
 </style>

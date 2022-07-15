@@ -3,45 +3,101 @@
   import List from "../shared/List.svelte";
   import Picture from "../shared/Picture.svelte";
   import ProductCard from "../shared/ProductCard.svelte";
-  import ReviewCard from "../shared/ReviewCard.svelte";
 
-  var xDown = null;
-  let yDown = null;
-  let xUp = null;
-  let yUp = null;
+  import { onMount } from "svelte";
 
-  function touchstart(e) {
-    const firstTouch = (e.touches || e.originalEvent.touches)[0];
-    xDown = firstTouch.clientX;
-    yDown = firstTouch.clientY;
-  }
+  let root;
+  onMount(() => {
+    let container = root.querySelector(".container");
+    let slide = root.querySelector(".slide");
+    let box = root.querySelectorAll(".box");
+    let width = box[0].offsetWidth + 32;
+    slide.style.minWidth = `${box.length * width}px`;
+    let start;
+    let change;
 
-  function touchmove(e) {
-    if (!xDown || !yDown) return;
-    xUp = e.touches[0].clientX;
-    yUp = e.touches[0].clientY;
-  }
+    container.addEventListener("dragstart", (e) => {
+      start = e.clientX;
+    });
+    container.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      let touch = e.clientX;
+      change = start - touch;
+    });
+    container.addEventListener("dragend", slideShow);
 
-  function touchend(e) {
-    let xDiff = xUp - xDown;
-    let yDiff = yUp - yDown;
-    if (
-      Math.abs(xDiff) > Math.abs(yDiff) &&
-      Math.abs(xDiff) > 0.33 * document.body.clientWidth
-    ) {
-      if (xDiff < 0) {
-        //sang phải(right)
+    //touch mobile
+    container.addEventListener("touchstart", (e) => {
+      start = e.touches[0].clientX;
+    });
+    container.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      let touch = e.touches[0];
+      change = start - touch.clientX;
+    });
+    container.addEventListener("touchend", slideShow);
+
+    function slideShow() {
+      if (change > 0) {
+        container.scrollLeft += width;
       } else {
-        //sang trái(left)
-        console.log("preview");
+        container.scrollLeft -= width;
       }
     }
-    (xDown = null), (yDown = null);
-  }
+
+    //ReviewCard
+    let container2 = root.querySelector(".container2");
+    let slide2 = root.querySelector(".slide2");
+    let box2 = root.querySelectorAll(".box2");
+    let iconRight = root.querySelector(".icon-right");
+    let iconLeft = root.querySelector(".icon-left");
+    let width2 = box2[0].offsetWidth + 32;
+    slide2.style.minWidth = `${box2.length * width}px`;
+    let start2;
+    let change2;
+
+    container2.addEventListener("dragstart", (e) => {
+      start2 = e.clientX;
+    });
+    container2.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      let touch2 = e.clientX;
+      change2 = start2 - touch2;
+    });
+    container2.addEventListener("dragend", slideShow2);
+
+    //touch mobile
+    container2.addEventListener("touchstart", (e) => {
+      start2 = e.touches[0].clientX;
+    });
+    container2.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      let touch2 = e.touches[0];
+      change2 = start2 - touch2.clientX;
+    });
+    container2.addEventListener("touchend", slideShow2);
+
+    iconRight.addEventListener("click", (e) => {
+      container2.scrollLeft += width2;
+    });
+
+    iconLeft.addEventListener("click", (e) => {
+      container2.scrollLeft -= width2;
+    });
+
+    function slideShow2() {
+      if (change2 > 0) {
+        container2.scrollLeft += width2;
+        console.log(width2);
+      } else {
+        container2.scrollLeft -= width2;
+      }
+    }
+  });
 </script>
 
-<main class="main">
-  <section class="above mx-5 lg:mx-10 xl:mx-20 2xl:mx-40">
+<main bind:this={root} class="main mx-auto">
+  <section class="above  mx-5 lg:mx-10 xl:mx-20 2xl:mx-40">
     <section
       class="info my-12 overflow-hidden p-4 sm:py-14 md:py-28 rounded-xl md:bg-fixed"
     >
@@ -249,7 +305,7 @@
   <section class="below">
     <section class="watch">
       <div>
-        <div>
+        <div class="mx-5 lg:mx-10 xl:mx-20 2xl:mx-40">
           <p class="text-center mb-4 text-xl md:text-2xl">
             That’s why I’ve always recommended:
           </p>
@@ -331,7 +387,7 @@
         item5="Has a severe lack of energy"
       />
     </section>
-    <section>
+    <section class="">
       <div class="bg-tahiti text-white text-center p-5 md:p-20">
         <p class="md:text-xl">
           Ready to get started? Well, there’s just one thing we need to talk
@@ -431,55 +487,58 @@
       </div>
     </section>
     <!-- ProductCard -->
-    <section
-      class="product my-8 mx-4 flex justify-center lg:mx-10 xl:mx-20 2xl:mx-40"
-    >
-      <div
-        on:touchstart={touchstart}
-        on:touchmove={touchmove}
-        on:touchend={touchend}
-        class="products flex gap-x-8 overflow-x-auto"
-      >
-        <ProductCard
-          name="Electrolyte Powder, Raspberry & Lemon"
-          image="https://dev-store.drberg.com/fn/images/product/electrolite_mobile-min.webp"
-          description="This electrifying formula naturally supports hydration, healthy muscles, and high energy while adjusting to ketosis."
-          intro1="​13x more electrolytes than leading sports drinks"
-          intro2="​1000 mg of potassium per serving to naturally boost energy levels"
-          intro3="​ZERO fattening sugar, carbs, or maltodextrin that can kick you out of ketosis"
-          intro4="​​Has a natural raspberry and lemon flavor"
-          uses="Avoid weakness, fatigue, constipation, sugar cravings, and restlessness while adjusting to keto!"
-        />
-        <ProductCard
-          name="Nutritional Yeast Tablets"
-          image="https://drberg-dam.imgix.net/product-images/nutritional-yeast-1.png?w=149&q=50&auto=compress,format"
-          description="When adjusting to ketosis and especially when experiencing the keto flu, one of the best ways to provide support for your whole body is with B vitamins!"
-          intro1="​Contains all 8 essential B vitamins to support healthy keto-adaptation"
-          intro2="​Supports healthy metabolism for better overall well - being and weight loss"
-          intro3="​ZERO fattening sugar, carbs, or maltodextrin that can kick you out of ketosis"
-          intro4="​​Prevents keto flu effects like low energy and irritability"
-          uses="With just 3 tablets three times per day, you give your body B vitamins that support a healthy metabolism and keto-adaptation."
-        />
-        <ProductCard
-          name="Electrolyte Powder, Raspberry & Lemon"
-          image="https://dev-store.drberg.com/fn/images/product/electrolite_mobile-min.webp"
-          description="This electrifying formula naturally supports hydration, healthy muscles, and high energy while adjusting to ketosis."
-          intro1="​13x more electrolytes than leading sports drinks"
-          intro2="​1000 mg of potassium per serving to naturally boost energy levels"
-          intro3="​ZERO fattening sugar, carbs, or maltodextrin that can kick you out of ketosis"
-          intro4="​​Has a natural raspberry and lemon flavor"
-          uses="Avoid weakness, fatigue, constipation, sugar cravings, and restlessness while adjusting to keto!"
-        />
-        <ProductCard
-          name="Electrolyte Powder, Raspberry & Lemon"
-          image="https://dev-store.drberg.com/fn/images/product/electrolite_mobile-min.webp"
-          description="This electrifying formula naturally supports hydration, healthy muscles, and high energy while adjusting to ketosis."
-          intro1="​13x more electrolytes than leading sports drinks"
-          intro2="​1000 mg of potassium per serving to naturally boost energy levels"
-          intro3="​ZERO fattening sugar, carbs, or maltodextrin that can kick you out of ketosis"
-          intro4="​​Has a natural raspberry and lemon flavor"
-          uses="Avoid weakness, fatigue, constipation, sugar cravings, and restlessness while adjusting to keto!"
-        />
+    <section class="parent lg:px-10 xl:px-20 2xl:px-40">
+      <div class="container ">
+        <div class="slide">
+          <div class="box">
+            <ProductCard
+              name="Electrolyte Powder, Raspberry & Lemon"
+              image="https://dev-store.drberg.com/fn/images/product/electrolite_mobile-min.webp"
+              description="This electrifying formula naturally supports hydration, healthy muscles, and high energy while adjusting to ketosis."
+              intro1="​13x more electrolytes than leading sports drinks"
+              intro2="​1000 mg of potassium per serving to naturally boost energy levels"
+              intro3="​ZERO fattening sugar, carbs, or maltodextrin that can kick you out of ketosis"
+              intro4="​​Has a natural raspberry and lemon flavor"
+              uses="Avoid weakness, fatigue, constipation, sugar cravings, and restlessness while adjusting to keto!"
+            />
+          </div>
+          <div class="box  ">
+            <ProductCard
+              name="Electrolyte Powder, Raspberry & Lemon"
+              image="https://dev-store.drberg.com/fn/images/product/electrolite_mobile-min.webp"
+              description="This electrifying formula naturally supports hydration, healthy muscles, and high energy while adjusting to ketosis."
+              intro1="​13x more electrolytes than leading sports drinks"
+              intro2="​1000 mg of potassium per serving to naturally boost energy levels"
+              intro3="​ZERO fattening sugar, carbs, or maltodextrin that can kick you out of ketosis"
+              intro4="​​Has a natural raspberry and lemon flavor"
+              uses="Avoid weakness, fatigue, constipation, sugar cravings, and restlessness while adjusting to keto!"
+            />
+          </div>
+          <div class="box  ">
+            <ProductCard
+              name="Electrolyte Powder, Raspberry & Lemon"
+              image="https://dev-store.drberg.com/fn/images/product/electrolite_mobile-min.webp"
+              description="This electrifying formula naturally supports hydration, healthy muscles, and high energy while adjusting to ketosis."
+              intro1="​13x more electrolytes than leading sports drinks"
+              intro2="​1000 mg of potassium per serving to naturally boost energy levels"
+              intro3="​ZERO fattening sugar, carbs, or maltodextrin that can kick you out of ketosis"
+              intro4="​​Has a natural raspberry and lemon flavor"
+              uses="Avoid weakness, fatigue, constipation, sugar cravings, and restlessness while adjusting to keto!"
+            />
+          </div>
+          <div class="box  ">
+            <ProductCard
+              name="Electrolyte Powder, Raspberry & Lemon"
+              image="https://dev-store.drberg.com/fn/images/product/electrolite_mobile-min.webp"
+              description="This electrifying formula naturally supports hydration, healthy muscles, and high energy while adjusting to ketosis."
+              intro1="​13x more electrolytes than leading sports drinks"
+              intro2="​1000 mg of potassium per serving to naturally boost energy levels"
+              intro3="​ZERO fattening sugar, carbs, or maltodextrin that can kick you out of ketosis"
+              intro4="​​Has a natural raspberry and lemon flavor"
+              uses="Avoid weakness, fatigue, constipation, sugar cravings, and restlessness while adjusting to keto!"
+            />
+          </div>
+        </div>
       </div>
     </section>
     <!-- ProductCard -->
@@ -544,56 +603,168 @@
         </div>
       </div>
     </section>
-    <section class="my-4 lg:mx-10 xl:mx-20 2xl:mx-40">
-      <div class="p-5">
+    <!-- ReviewCard -->
+    <div class="mx-5 lg:mx-10 xl:mx-20 2xl:mx-[166px]">
+      <section class="parent2 my-8 relative">
         <h2 class="text-center text-2xl md:text-5xl font-medium mb-4">
           Not convinced yet? Take a look at some of these five-star reviews!
         </h2>
-        <div class="card flex gap-4 overflow-x-scroll">
-          <ReviewCard
-            name="Amazon Customer"
-            image="AC"
-            date="May 20, 2021"
-            description="I like Dr. Berg and his program is helping me to finally fix my slow metabolism and lose weight!"
-          />
-          <ReviewCard
-            name="Jose"
-            image="J"
-            date="June 22, 2021"
-            description="taste great. books are great for beginners."
-          />
-          <ReviewCard
-            name="
-            bassma fetaihi"
-            image="AC"
-            date="Oct 9, 2019"
-            description="I love this kit
-            Thank you dr berg"
-          />
-          <ReviewCard
-            name="
-            Catherine Del Raso"
-            image="CDR"
-            date="Sep 21, 2019"
-            description="Everything you need to know about the Ketogenic lifestyle at your fingertips. The supplements are"
-          />
-          <ReviewCard
-            name="
-            April R."
-            image="AR"
-            date="Oct 9, 2019"
-            description="Condensed book is easy to read to get started right away. Products help speed results. I noticed weig"
-          />
+        <button class="icon icon-left left-4 hidden md:block">
+          <i class="bx bxs-chevron-left" />
+        </button>
+        <div class="container2 ">
+          <div class="slide2">
+            <div class="box2">
+              <div class="flex gap-x-2">
+                <div
+                  class="flex items-center justify-center w-10 h-10 rounded-full bg-tahiti text-white font-bold"
+                >
+                  ab
+                </div>
+                <div>
+                  <p class="text-xl font-semibold">Anna Bide</p>
+                  <div class="flex gap-4 text-sm">
+                    <p>May 20, 2021</p>
+                    <span class="text-orange">Verified Purchase</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p>
+                  Berg and his program is helping me to finally fix my slow
+                  metabolism and lose weight!
+                </p>
+              </div>
+            </div>
+            <div class="box2">
+              <div class="flex gap-x-2">
+                <div
+                  class="flex items-center justify-center w-10 h-10 rounded-full bg-tahiti text-white font-bold"
+                >
+                  ab
+                </div>
+                <div>
+                  <p class="text-xl font-semibold">Anna Bide</p>
+                  <div class="flex gap-4 text-sm">
+                    <p>May 20, 2021</p>
+                    <span class="text-orange">Verified Purchase</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p>
+                  Berg and his program is helping me to finally fix my slow
+                  metabolism and lose weight!
+                </p>
+              </div>
+            </div>
+            <div class="box2">
+              <div class="flex gap-x-2">
+                <div
+                  class="flex items-center justify-center w-10 h-10 rounded-full bg-tahiti text-white font-bold"
+                >
+                  ab
+                </div>
+                <div>
+                  <p class="text-xl font-semibold">Anna Bide</p>
+                  <div class="flex gap-4 text-sm">
+                    <p>May 20, 2021</p>
+                    <span class="text-orange">Verified Purchase</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p>
+                  Berg and his program is helping me to finally fix my slow
+                  metabolism and lose weight!
+                </p>
+              </div>
+            </div>
+            <div class="box2">
+              <div class="flex gap-x-2">
+                <div
+                  class="flex items-center justify-center w-10 h-10 rounded-full bg-tahiti text-white font-bold"
+                >
+                  ab
+                </div>
+                <div>
+                  <p class="text-xl font-semibold">Anna Bide</p>
+                  <div class="flex gap-4 text-sm">
+                    <p>May 20, 2021</p>
+                    <span class="text-orange">Verified Purchase</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p>
+                  Berg and his program is helping me to finally fix my slow
+                  metabolism and lose weight!
+                </p>
+              </div>
+            </div>
+            <div class="box2">
+              <div class="flex gap-x-2">
+                <div
+                  class="flex items-center justify-center w-10 h-10 rounded-full bg-tahiti text-white font-bold"
+                >
+                  ab
+                </div>
+                <div>
+                  <p class="text-xl font-semibold">Anna Bide</p>
+                  <div class="flex gap-4 text-sm">
+                    <p>May 20, 2021</p>
+                    <span class="text-orange">Verified Purchase</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p>
+                  Berg and his program is helping me to finally fix my slow
+                  metabolism and lose weight!
+                </p>
+              </div>
+            </div>
+            <div class="box2">
+              <div class="flex gap-x-2">
+                <div
+                  class="flex items-center justify-center w-10 h-10 rounded-full bg-tahiti text-white font-bold"
+                >
+                  ab
+                </div>
+                <div>
+                  <p class="text-xl font-semibold">Anna Bide</p>
+                  <div class="flex gap-4 text-sm">
+                    <p>May 20, 2021</p>
+                    <span class="text-orange">Verified Purchase</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p>
+                  Berg and his program is helping me to finally fix my slow
+                  metabolism and lose weight!
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <button class="icon icon-right right-4 hidden md:block">
+          <i class="bx bxs-chevron-right" />
+        </button>
         <div class="text-center mt-4">
           <Button inverse="true" flat="true">Show All Reviews</Button>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
+    <!-- ReviewCard -->
   </section>
 </main>
 
-<style>
+<style lang="postcss">
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+
   .info {
     background-image: url("https://dev-store.drberg.com/fn/images/Caibung_mobile.jpg");
     background-repeat: no-repeat;
@@ -604,5 +775,105 @@
     background-image: url("https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80");
     background-repeat: no-repeat;
     background-size: cover;
+  }
+
+  .parent,
+  .parent2 {
+    width: 100%;
+    overflowx: hidden;
+  }
+
+  .container,
+  .container2 {
+    min-width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+    scroll-behavior: smooth;
+  }
+  .slide,
+  .slide2 {
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 1rem 0;
+  }
+
+  .box {
+    min-width: 80vw;
+    height: 100%;
+    min-height: 960px;
+    margin: 0 16px;
+    overflow: hidden;
+    box-shadow: 0 0 4px 2px #0003;
+    border-radius: 4px;
+  }
+
+  .box2 {
+    background-color: rgb(239, 239, 239);
+    min-width: 80vw;
+    padding: 1rem;
+    height: 100%;
+    margin: 0 16px;
+    min-height: 200px;
+    overflow: hidden;
+    box-shadow: 0 0 4px 2px #0003;
+    border-radius: 4px;
+  }
+
+  img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .icon {
+    border: 2px solid #0091a8;
+    width: 3rem;
+    height: 3rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 99999999px;
+    background-color: #fff;
+  }
+
+  .icon:hover {
+    background-color: #0091a8;
+  }
+
+  .icon-right {
+    right: 16px;
+  }
+
+  @media (min-width: 640px) {
+    .box {
+      min-width: 88vw;
+      min-height: 780px;
+    }
+  }
+  @media (min-width: 768px) {
+    .box {
+      min-width: 60vw;
+      min-height: 880px;
+    }
+    .box2 {
+      min-width: 42vw;
+    }
+  }
+  @media (min-width: 1024px) {
+    .box {
+      min-width: 46vw;
+      min-height: 880px;
+    }
+  }
+  @media (min-width: 1280px) {
+    .box {
+      min-width: 16vw;
+      min-height: 980px;
+    }
+    .box2 {
+      min-width: 18vw;
+      margin-left: 8px;
+    }
   }
 </style>
