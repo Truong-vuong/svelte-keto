@@ -14,25 +14,19 @@
 
 <style lang="postcss">
   .primary {
-    /* color: white;
-    background-color: #0091a8; */
     @apply text-white bg-tahiti;
   }
   .primary:hover {
-    background-color: #37b5c8;
     transition: 0.4s linear;
   }
   .flat {
-    border-radius: 2px;
+    @apply rounded-sm;
   }
   .inverse {
-    background-color: white;
-    color: #0091a8;
-    border: 2px solid #0091a8;
+    @apply bg-white text-tahiti border-2 border-solid border-tahiti;
   }
   .inverse:hover {
-    color: white;
-    background-color: #0091a8;
+    @apply text-white bg-tahiti;
     transition: 0.4s linear;
   }
 </style>

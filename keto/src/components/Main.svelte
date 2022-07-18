@@ -7,6 +7,38 @@
   import { onMount } from "svelte";
 
   let root;
+  let list1 = {
+    title: "Keto and IF are perfect for anyone who:",
+    items: [
+      "Struggles to lose weight",
+      "Has chronic high blood sugar",
+      "Is Type 2 Diabetic",
+      "Has constant heartburn or acid reflux/GERD",
+      "Has a severe lack of energy",
+    ],
+  };
+
+  let list2 = {
+    title: "Keto and IF are perfect for anyone who:",
+    items: [
+      "Struggles to lose weight 22",
+      "Has chronic high blood sugar 2222",
+      "Is Type 2 Diabetic222",
+      "Has constant heartburn or acid reflux/GERD ",
+      "Has a severe lack of energy222",
+    ],
+  };
+
+  let list3 = {
+    title: "Keto and IF are perfect for anyone who:",
+    items: [
+      "Nausea",
+      "Vomiting",
+      "​Irritability",
+      "Vomiting",
+      "​Sugar Cravings and more...",
+    ],
+  };
   onMount(() => {
     let container = root.querySelector(".container");
     let slide = root.querySelector(".slide");
@@ -353,14 +385,8 @@
       </div>
     </section>
     <section class="p-5 lg:mx-10 xl:mx-20 2xl:mx-40">
-      <List
-        title="Unlike other weight loss programs, Healthy Keto and Intermittent Fasting involves:"
-        item1="Cutting out carbohydrates completely"
-        item2="Fasting for intermittent periods throughout the week"
-        item3="Putting your body in the new metabolic state of ketosis"
-        item4="​Eating high levels of healthy fats and vegetables"
-        item5:false
-      />
+      <List list={list2} />
+
       <div class="p-5 md:p-10 bg-bermuda  rounded-xl md:text-2xl">
         <p>
           Instead of releasing insulin after eating, ketosis will change your
@@ -378,14 +404,7 @@
         </p>
         <br />
       </div>
-      <List
-        title="Keto and IF are perfect for anyone who:"
-        item1="Struggles to lose weight"
-        item2="Has chronic high blood sugar"
-        item3="Is Type 2 Diabetic"
-        item4="​Has constant heartburn or acid reflux/GERD"
-        item5="Has a severe lack of energy"
-      />
+      <List list={list1} />
     </section>
     <section class="">
       <div class="bg-tahiti text-white text-center p-5 md:p-20">
@@ -418,16 +437,7 @@
               symptoms during this process, known as the “Keto Flu.”
             </p>
           </div>
-          <List
-            wFull="w-full"
-            flexCol="flex-col"
-            title="Some symptoms of the Keto Flu may include:"
-            item1="Nausea"
-            item2="Vomiting"
-            item3="Vomiting"
-            item4="​Irritability"
-            item5="​Sugar Cravings and more..."
-          />
+          <List flexCol="flex-col" list={list3} />
         </div>
       </section>
     </section>
@@ -609,8 +619,11 @@
         <h2 class="text-center text-2xl md:text-5xl font-medium mb-4">
           Not convinced yet? Take a look at some of these five-star reviews!
         </h2>
-        <button class="icon icon-left left-4 hidden md:block">
+        <button class="icon icon-left -left-4 hidden md:block">
           <i class="bx bxs-chevron-left" />
+        </button>
+        <button class="icon icon-right right-4 hidden md:block">
+          <i class="bx bxs-chevron-right" />
         </button>
         <div class="container2 ">
           <div class="slide2">
@@ -748,9 +761,7 @@
             </div>
           </div>
         </div>
-        <button class="icon icon-right right-4 hidden md:block">
-          <i class="bx bxs-chevron-right" />
-        </button>
+
         <div class="text-center mt-4">
           <Button inverse="true" flat="true">Show All Reviews</Button>
         </div>
